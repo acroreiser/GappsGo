@@ -27,4 +27,4 @@ cat update-binary | sed s@"###TARGET_DEVICE_DISP###"@"TARGET_DEVICE_DISP=\"$DISP
 sed -i s@"###TARGET_DEVICE###"@"TARGET_DEVICE=\"$DEVICE\""@ META-INF/com/google/android/update-binary;
 sed -i s@"###SYSTEM_BLK###"@"SYSTEM_BLK=\"$SYSBLK\""@ META-INF/com/google/android/update-binary;
 sed -i s@"###PACKAGER###"@"$(whoami)"@ META-INF/com/google/android/update-binary;
-zip -r9 lowram_gapps-arm-11.0-go-$(date '+%Y%m%d').zip META-INF system;
+zip -r9 antman_gapps-arm-11.0-go-$(date '+%Y%m%d').zip META-INF system;
