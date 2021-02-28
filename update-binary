@@ -154,11 +154,11 @@ chmod 0755 $sar/app/* $sar/priv-app/* $sar/product/app/* $sar/product/priv-app/*
 chmod 0755 $sar/app $sar/etc $sar/etc/permissions $sar/priv-app $sar/product $sar/system_ext $sar/product/app $sar/product/etc
 chmod 0755 $sar/product/etc/permissions $sar/product/framework $sar/product/overlay $sar/product/priv-app $sar/system_ext/etc $sar/system_ext/etc/permissions
 chmod 0755 $sar/product/etc/sysconfig $sar/product/etc/default-permissions $sar/product/etc/preferred-apps
-chmod -R 0755 $sar/product/priv-app/GoogleCameraGo/lib $sar/system/product/usr
-chmod 0644 $sar/app/*/*.apk $sar/priv-app/*/*.apk $sar/product/app/*/*.apk $sar/product/priv-app/*/*.apk $sar/product/system_ext/*/*.apk
+chmod -R 0755 $sar/product/priv-app/GoogleCameraGo/lib $sar/product/usr
+chmod 0644 $sar/app/*/*.apk $sar/priv-app/*/*.apk $sar/product/app/*/*.apk $sar/product/priv-app/*/*.apk $sar/product/system_ext/priv-app/*/*.apk
 chmod 0644 $sar/product/etc/default-permissions/default-permissions-google.xml $sar/product/etc/permissions/* sar/product/etc/sysconfig/*
 chmod 0644 $sar/product/etc/preferred-apps/google_go.xml $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml
-chmod 0644 $sar/product/framework/com.google.android.dialer.support.jar $sar/product/overlay/*.apk $sar/product/priv-app/GoogleCameraGo/lib/arm/* $sar/system/product/usr/share/ime/google/d3_lms/*.dict
+chmod 0644 $sar/product/framework/com.google.android.dialer.support.jar $sar/product/overlay/*.apk $sar/product/priv-app/GoogleCameraGo/lib/arm/* $sar/product/usr/share/ime/google/d3_lms/*.dict
 ui_print "  + Unix file permissions";
 chcon -R u:object_r:system_file:s0 $sar/app $sar/priv-app $sar/product/app
 chcon -R u:object_r:system_file:s0 $sar/product/priv-app $sar/system_ext/priv-app $sar/product/etc/permissions
