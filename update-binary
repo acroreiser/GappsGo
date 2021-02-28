@@ -1,0 +1,187 @@
+#!/sbin/sh
+#
+# Quickly written by acroreiser
+
+OUTFD=/proc/self/fd/$2;
+ZIP="$3";
+DIR=`dirname "$ZIP"`;
+
+# CHANGE $SYSTEM_BLK TO YOUR /SYSTEM BLOCK DEVICE
+# AND $TARGET_DEVICE(_DISP) to your device model
+# IF YOU WANT THIS ON YOUR DEVICE
+# OR SUGGEST ME UNIVERSAL SOLUTION (telegram: @acroreiser)
+
+###SYSTEM_BLK###
+
+# a6010="/dev/block/mmcblk0p23";
+
+###TARGET_DEVICE###
+# Really target device codename
+
+###TARGET_DEVICE_DISP###
+# Just to display
+# a6010="Lenovo A6010";
+
+## internal functions
+
+ui_print() 
+{
+	until [ ! "$1" ]; do
+		echo -e "ui_print $1\nui_print" > $OUTFD;
+		shift;
+	done;
+}
+
+show_progress() 
+{
+	echo "progress $1 $2" > $OUTFD;
+}
+
+## start of main script
+
+show_progress 1 4;
+ui_print "   Installing GappsGo";
+ui_print " - a gapps package for Android 11 Go!";
+ui_print " ";
+ui_print " Taken from Nokia 1 Plus firmware dump with build id:";
+ui_print " Antman_00WW-user 11 RP1A.200720.011 00WW_3_020 release-keys";
+ui_print " ";
+ui_print " * Fixed GoogleWallpaper permissions";
+ui_print " * Added GoogleCameraGo";
+ui_print " ";
+ui_print " Originally packaged by acroreiser to use with LineageGo 18.1 builds for Lenovo A6010/A6000.";
+ui_print " ";
+ui_print " Packager: ###PACKAGER###";
+ui_print " Target device: $TARGET_DEVICE_DISP ($TARGET_DEVICE)";
+ui_print " ";
+
+umount /system;
+
+ui_print " * Mounting /system";
+mount -o rw -t ext4 $SYSTEM_BLK /system;
+if test -f /system/system/build.prop;
+then
+	ui_print "  + Detected system-as-root";
+	sar=/system/system;
+elif test -f /system/build.prop;
+then
+	sar=/system;
+fi
+ui_print " ";
+
+ui_print " * Checking compatibility...";
+SDK=$(grep -i ro.build.version.sdk $sar/build.prop | sed s/ro.build.version.sdk=// | head -n 1);
+LOWRAM=$(grep -i ro.config.low_ram $sar/build.prop | sed s/ro.config.low_ram=// | head -n 1);
+DEVICE=$(grep -i ro.build.product= $sar/build.prop | sed s/ro.build.product=// | head -n 1);
+if [ "$DEVICE" != "$TARGET_DEVICE" ]; then
+	ui_print "  - Device: $DEVICE";
+	ui_print "  ! This gapps packaged for $TARGET_DEVICE! Aborted.";
+	exit 1;
+fi
+ui_print "  + Device: $DEVICE";
+if [ "$SDK" != "30" ]; then
+	ui_print "  - Detected SDK: $SDK";
+	ui_print "  ! This gapps package is for Android 11 Go (SDK 30) only! Aborted.";
+	exit 1;
+fi
+ui_print "  + Detected SDK: $SDK";
+if [ "$LOWRAM" != "true" ]; then
+	ui_print "  - System is Android Go: NO";
+	ui_print "  ! This gapps package is for Android Go only!";
+	ui_print "  ! Regular Android 11 is not supported by this package. Aborting.";
+	exit 1;
+fi
+ui_print "  + System is Android Go: yes"
+ui_print "  + OS is compatible"
+ui_print " ";
+
+ui_print " * Extracting Gapps..."
+mkdir /tmp/gapps
+unzip -o -d /tmp/gapps "$ZIP" -x META-INF/com/google/android/*
+if [ $? != 0 ]; then
+	ui_print "  ! Error - unzip failed!";
+	ui_print "  = System files was not changed. Aborting.";
+	rm -fr /tmp/gapps;
+	exit 1;
+fi;
+chown -R root:root /tmp/gapps
+ui_print "  + Success";
+ui_print " ";
+
+# TODO: collect more info about such files in other ROMs
+ui_print " * Removing conflicting files..."
+ui_print "  - $sar/app";
+rm -fr $sar/app/ExtShared;
+ui_print "  - $sar/priv-app";
+rm -fr $sar/priv-app/LineageSetupWizard
+rm -fr $sar/priv-app/PackageInstaller;
+ui_print "  - $sar/product/app";
+rm -fr $sar/product/app/Calendar;
+rm -fr $sar/product/app/DeskClock;
+rm -fr $sar/product/app/Etar;
+rm -fr $sar/product/app/ExactCalculator;
+rm -fr $sar/product/app/Jelly;
+rm -fr $sar/product/app/LatinIME;
+rm -fr $sar/product/app/messaging;
+rm -fr $sar/product/app/webview;
+ui_print "  - $sar/product/priv-app";
+rm -fr $sar/product/priv-app/Contacts;
+rm -fr $sar/product/priv-app/Dialer;
+rm -fr $sar/product/priv-app/OneTimeInitializer;
+ui_print "  - $sar/system_ext/priv-app";
+rm -fr $sar/system_ext/priv-app/Gallery2;
+rm -fr $sar/system_ext/priv-app/Snap;
+ui_print "  - $sar/etc";
+rm -f $sar/etc/sysconfig/googledialergo-sysconfig.xml;
+ui_print "  + Conflicting files is removed";
+ui_print " ";
+
+ui_print " * Copying Gapps files to system...";
+ui_print "  = This may took a few minutes"
+cp -a /tmp/gapps/system/* $sar 
+if [ $? != 0 ]; then
+	ui_print " ! Error - installation failed!";
+	ui_print " ! System files is changed.";
+	ui_print " ! Reflash your current ROM or phone may be in unbootable state.";
+	rm -fr /tmp/gapps;
+	exit 1;
+fi;
+ui_print "  + Success";
+ui_print " ";
+
+ui_print " * Setting permissions"
+chmod 0755 $sar/app/* $sar/priv-app/* $sar/product/app/* $sar/product/priv-app/* $sar/system_ext/priv-app/* $sar/system_ext/priv-app
+chmod 0755 $sar/app $sar/etc $sar/etc/permissions $sar/priv-app $sar/product $sar/system_ext $sar/product/app $sar/product/etc
+chmod 0755 $sar/product/etc/permissions $sar/product/framework $sar/product/overlay $sar/product/priv-app $sar/system_ext/etc $sar/system_ext/etc/permissions
+chmod 0755 $sar/product/etc/sysconfig $sar/product/etc/default-permissions $sar/product/etc/preferred-apps
+chmod -R 0755 $sar/product/priv-app/GoogleCameraGo/lib $sar/system/product/usr
+chmod 0644 $sar/app/*/*.apk $sar/priv-app/*/*.apk $sar/product/app/*/*.apk $sar/product/priv-app/*/*.apk $sar/product/system_ext/*/*.apk
+chmod 0644 $sar/product/etc/default-permissions/default-permissions-google.xml $sar/product/etc/permissions/* sar/product/etc/sysconfig/*
+chmod 0644 $sar/product/etc/preferred-apps/google_go.xml $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml
+chmod 0644 $sar/product/framework/com.google.android.dialer.support.jar $sar/product/overlay/*.apk $sar/product/priv-app/GoogleCameraGo/lib/arm/* $sar/system/product/usr/share/ime/google/d3_lms/*.dict
+ui_print "  + Unix file permissions";
+chcon -R u:object_r:system_file:s0 $sar/app $sar/priv-app $sar/product/app
+chcon -R u:object_r:system_file:s0 $sar/product/priv-app $sar/system_ext/priv-app $sar/product/etc/permissions
+chcon -R u:object_r:system_file:s0 $sar/product/etc/default-permissions $sar/product/etc/preferred-apps $sar/product/etc/sysconfig
+chcon -R u:object_r:system_file:s0 $sar/etc/permissions/com.google* $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml
+chcon -R u:object_r:system_file:s0 $sar/product/framework/com.google.android.dialer.support.jar
+chcon -R u:object_r:system_file:s0 $sar/product/overlay/*.apk $sar/system/product/usr
+ui_print "  + SELinux contexts";
+ui_print " ";
+
+ui_print " * Adding GMS version to product/build.prop";
+echo "" >> $sar/product/build.prop
+echo "ro.com.google.gmsversion=11_202011.go" >> $sar/product/build.prop
+ui_print "  + Done";
+ui_print " ";
+
+umount /system;
+
+ui_print " * Removing temporary files";
+rm -fr /tmp/gapps;
+ui_print "  + Done";
+ui_print " ";
+
+ui_print " ";
+ui_print " * Installing successful!";
+ui_print " ";
