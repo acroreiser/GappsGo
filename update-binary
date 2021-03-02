@@ -91,29 +91,16 @@ if [ "$LOWRAM" != "true" ]; then
 	ui_print "  ! Regular Android 11 is not supported by this package. Aborting.";
 	exit 1;
 fi
-ui_print "  + System is Android Go: yes"
-ui_print "  + OS is compatible"
-ui_print " ";
-
-ui_print " * Extracting Gapps..."
-mkdir /tmp/gapps
-unzip -o -d /tmp/gapps "$ZIP" -x META-INF/com/google/android/*
-if [ $? != 0 ]; then
-	ui_print "  ! Error - unzip failed!";
-	ui_print "  = System files was not changed. Aborting.";
-	rm -fr /tmp/gapps;
-	exit 1;
-fi;
-chown -R root:root /tmp/gapps
-ui_print "  + Success";
+ui_print "  + System is Android Go: yes";
+ui_print "  + OS is compatible";
 ui_print " ";
 
 # TODO: collect more info about such files in other ROMs
-ui_print " * Removing conflicting files..."
+ui_print " * Removing conflicting files...";
 ui_print "  - $sar/app";
 rm -fr $sar/app/ExtShared;
 ui_print "  - $sar/priv-app";
-rm -fr $sar/priv-app/LineageSetupWizard
+rm -fr $sar/priv-app/LineageSetupWizard;
 rm -fr $sar/priv-app/PackageInstaller;
 ui_print "  - $sar/product/app";
 rm -fr $sar/product/app/Calendar;
@@ -136,42 +123,93 @@ rm -f $sar/etc/sysconfig/googledialergo-sysconfig.xml;
 ui_print "  + Conflicting files is removed";
 ui_print " ";
 
-ui_print " * Copying Gapps files to system...";
-ui_print "  = This may took a few minutes"
-cp -a /tmp/gapps/system/* $sar 
+ui_print " * Installing Gapps...";
+mkdir /tmp/gapps;
+
+unzip -o -d /tmp "$ZIP" unzip;
 if [ $? != 0 ]; then
-	ui_print " ! Error - installation failed!";
-	ui_print " ! System files is changed.";
-	ui_print " ! Reflash your current ROM or phone may be in unbootable state.";
+	ui_print "  - Preparing";
+	ui_print "  ! System files is changed.";
+	ui_print "  ! Reflash your current ROM or phone may be in unbootable state.";
+	rm -fr /tmp/gapps;
+	exit 1;
+fi;
+chmod 0755 /tmp/unzip;
+ui_print "  + Preparing";
+
+/tmp/unzip -o -d /tmp/gapps "$ZIP" -x META-INF/com/google/android/* system/product/priv-app/*;
+if [ $? != 0 ]; then
+	ui_print "  - Extracting first part";
+	ui_print "  ! System files is changed.";
+	ui_print "  ! Reflash your current ROM or phone may be in unbootable state.";
+	rm -fr /tmp/gapps;
+	exit 1;
+fi;
+ui_print "  + Extracted first part";
+chown -R root:root /tmp/gapps;
+
+ui_print "  * Copying Gapps files to system... (1/2)";
+ui_print "  = This may took a few minutes";
+cp -a /tmp/gapps/system/* $sar;
+if [ $? != 0 ]; then
+	ui_print "  ! Error - installation failed!";
+	ui_print "  ! System files is changed.";
+	ui_print "  ! Reflash your current ROM or phone may be in unbootable state.";
 	rm -fr /tmp/gapps;
 	exit 1;
 fi;
 ui_print "  + Success";
+rm -fr /tmp/gapps/*
+
+/tmp/unzip -o -d /tmp/gapps "$ZIP" system/product/priv-app/*;
+if [ $? != 0 ]; then
+	ui_print "  - Extracting second part";
+	ui_print " ! System files is changed.";
+	ui_print " ! Reflash your current ROM or phone may be in unbootable state.";
+	rm -fr /tmp/gapps /tmp/unzip;
+	exit 1;
+fi;
+ui_print "  + Extracted second part";
+chown -R root:root /tmp/gapps;
+
+ui_print "  * Copying Gapps files to system... (2/2)";
+ui_print "  = This may took a few minutes";
+cp -a /tmp/gapps/system/* $sar;
+if [ $? != 0 ]; then
+	ui_print "  ! Error - installation failed!";
+	ui_print "  ! System files is changed.";
+	ui_print "  ! Reflash your current ROM or phone may be in unbootable state.";
+	rm -fr /tmp/gapps;
+	exit 1;
+fi;
+rm -fr /tmp/gapps/* /tmp/unzip;
+
+ui_print "  + Success";
 ui_print " ";
 
-ui_print " * Setting permissions"
-chmod 0755 $sar/app/* $sar/priv-app/* $sar/product/app/* $sar/product/priv-app/* $sar/system_ext/priv-app/* $sar/system_ext/priv-app
-chmod 0755 $sar/app $sar/etc $sar/etc/permissions $sar/priv-app $sar/product $sar/system_ext $sar/product/app $sar/product/etc
-chmod 0755 $sar/product/etc/permissions $sar/product/framework $sar/product/overlay $sar/product/priv-app $sar/system_ext/etc $sar/system_ext/etc/permissions
-chmod 0755 $sar/product/etc/sysconfig $sar/product/etc/default-permissions $sar/product/etc/preferred-apps
-chmod -R 0755 $sar/product/priv-app/GoogleCameraGo/lib $sar/product/usr
-chmod 0644 $sar/app/*/*.apk $sar/priv-app/*/*.apk $sar/product/app/*/*.apk $sar/product/priv-app/*/*.apk $sar/product/system_ext/priv-app/*/*.apk
-chmod 0644 $sar/product/etc/default-permissions/default-permissions-google.xml $sar/product/etc/permissions/* sar/product/etc/sysconfig/*
-chmod 0644 $sar/product/etc/preferred-apps/google_go.xml $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml
-chmod 0644 $sar/product/framework/com.google.android.dialer.support.jar $sar/product/overlay/*.apk $sar/product/priv-app/GoogleCameraGo/lib/arm/* $sar/product/usr/share/ime/google/d3_lms/*.dict
+ui_print " * Setting permissions";
+chmod 0755 $sar/app/* $sar/priv-app/* $sar/product/app/* $sar/product/priv-app/* $sar/system_ext/priv-app/* $sar/system_ext/priv-app;
+chmod 0755 $sar/app $sar/etc $sar/etc/permissions $sar/priv-app $sar/product $sar/system_ext $sar/product/app $sar/product/etc;
+chmod 0755 $sar/product/etc/permissions $sar/product/framework $sar/product/overlay $sar/product/priv-app $sar/system_ext/etc $sar/system_ext/etc/permissions;
+chmod 0755 $sar/product/etc/sysconfig $sar/product/etc/default-permissions $sar/product/etc/preferred-apps;
+chmod -R 0755 $sar/product/priv-app/GoogleCameraGo/lib $sar/product/usr;
+chmod 0644 $sar/app/*/*.apk $sar/priv-app/*/*.apk $sar/product/app/*/*.apk $sar/product/priv-app/*/*.apk $sar/product/system_ext/priv-app/*/*.apk;
+chmod 0644 $sar/product/etc/default-permissions/default-permissions-google.xml $sar/product/etc/permissions/* sar/product/etc/sysconfig/*;
+chmod 0644 $sar/product/etc/preferred-apps/google_go.xml $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml;
+chmod 0644 $sar/product/framework/com.google.android.dialer.support.jar $sar/product/overlay/*.apk $sar/product/priv-app/GoogleCameraGo/lib/arm/* $sar/product/usr/share/ime/google/d3_lms/*.dict;
 ui_print "  + Unix file permissions";
-chcon -R u:object_r:system_file:s0 $sar/app $sar/priv-app $sar/product/app
-chcon -R u:object_r:system_file:s0 $sar/product/priv-app $sar/system_ext/priv-app $sar/product/etc/permissions
-chcon -R u:object_r:system_file:s0 $sar/product/etc/default-permissions $sar/product/etc/preferred-apps $sar/product/etc/sysconfig
-chcon -R u:object_r:system_file:s0 $sar/etc/permissions/com.google* $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml
-chcon -R u:object_r:system_file:s0 $sar/product/framework/com.google.android.dialer.support.jar
-chcon -R u:object_r:system_file:s0 $sar/product/overlay/*.apk $sar/system/product/usr
+chcon -R u:object_r:system_file:s0 $sar/app $sar/priv-app $sar/product/app;
+chcon -R u:object_r:system_file:s0 $sar/product/priv-app $sar/system_ext/priv-app $sar/product/etc/permissions;
+chcon -R u:object_r:system_file:s0 $sar/product/etc/default-permissions $sar/product/etc/preferred-apps $sar/product/etc/sysconfig;
+chcon -R u:object_r:system_file:s0 $sar/etc/permissions/com.google* $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml;
+chcon -R u:object_r:system_file:s0 $sar/product/framework/com.google.android.dialer.support.jar;
+chcon -R u:object_r:system_file:s0 $sar/product/overlay/*.apk $sar/system/product/usr;
 ui_print "  + SELinux contexts";
 ui_print " ";
 
 ui_print " * Adding GMS version to product/build.prop";
-echo "" >> $sar/product/build.prop
-echo "ro.com.google.gmsversion=11_202011.go" >> $sar/product/build.prop
+echo "" >> $sar/product/build.prop;
+echo "ro.com.google.gmsversion=11_202011.go" >> $sar/product/build.prop;
 ui_print "  + Done";
 ui_print " ";
 
