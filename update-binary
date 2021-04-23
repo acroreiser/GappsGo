@@ -100,7 +100,6 @@ ui_print " * Removing conflicting files...";
 ui_print "  - $sar/app";
 rm -fr $sar/app/ExtShared;
 ui_print "  - $sar/priv-app";
-rm -fr $sar/priv-app/LineageSetupWizard;
 rm -fr $sar/priv-app/PackageInstaller;
 ui_print "  - $sar/product/app";
 rm -fr $sar/product/app/Calendar;
