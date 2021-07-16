@@ -112,6 +112,7 @@ rm -fr $sar/product/app/ExactCalculator;
 rm -fr $sar/product/app/Jelly;
 rm -fr $sar/product/app/LatinIME;
 rm -fr $sar/product/app/messaging;
+rm -fr $sar/product/app/ModuleMetadata;
 rm -fr $sar/product/app/webview;
 ui_print "  - $sar/product/priv-app";
 rm -fr $sar/product/priv-app/Contacts;
