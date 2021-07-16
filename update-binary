@@ -97,6 +97,9 @@ ui_print " ";
 
 # TODO: collect more info about such files in other ROMs
 ui_print " * Removing conflicting files...";
+ui_print "  - $sar/apex";
+rm -fr $sar/apex/com.android.extservices;
+rm -fr $sar/apex/com.android.permission;
 ui_print "  - $sar/app";
 rm -fr $sar/app/ExtShared;
 ui_print "  - $sar/priv-app";
@@ -187,6 +190,10 @@ ui_print "  + Success";
 ui_print " ";
 
 ui_print " * Setting permissions";
+chmod 0755 -R $sar/apex/com.android.extservices.gms;
+chmod 0644 $sar/apex/com.android.extservices.gms/apex_manifest.pb $sar/apex/com.android.extservices.gms/apex_pubkey $sar/apex/com.android.extservices.gms/priv-app/ExtServices/ExtServices.apk;
+chmod 0755 -R $sar/apex/com.android.permission.gms;
+chmod 0644 $sar/apex/com.android.permission.gms/apex_manifest.pb $sar/apex/com.android.permission.gms/apex_pubkey $sar/apex/com.android.permission.gms/javalib/* $sar/apex/com.android.permission.gms/priv-app/GooglePermissionController/*.apk;
 chmod 0755 $sar/app/* $sar/priv-app/* $sar/product/app/* $sar/product/priv-app/* $sar/system_ext/priv-app/* $sar/system_ext/priv-app;
 chmod 0755 $sar/app $sar/etc $sar/etc/permissions $sar/priv-app $sar/product $sar/system_ext $sar/product/app $sar/product/etc;
 chmod 0755 $sar/product/etc/permissions $sar/product/framework $sar/product/overlay $sar/product/priv-app $sar/system_ext/etc $sar/system_ext/etc/permissions;
@@ -197,6 +204,8 @@ chmod 0644 $sar/product/etc/default-permissions/default-permissions-google.xml $
 chmod 0644 $sar/product/etc/preferred-apps/google_go.xml $sar/etc/permissions/privapp-permissions-google-system.xml $sar/system_ext/etc/permissions/privapp-permissions-google-system-ext.xml;
 chmod 0644 $sar/product/framework/com.google.android.dialer.support.jar $sar/product/overlay/*.apk $sar/product/priv-app/GoogleCameraGo/lib/arm/* $sar/product/usr/share/ime/google/d3_lms/*.dict;
 ui_print "  + Unix file permissions";
+chcon -R u:object_r:system_file:s0  -R $sar/apex/com.android.extservices.gms;
+chcon -R u:object_r:system_file:s0  -R $sar/apex/com.android.permission.gms;
 chcon -R u:object_r:system_file:s0 $sar/app $sar/priv-app $sar/product/app;
 chcon -R u:object_r:system_file:s0 $sar/product/priv-app $sar/system_ext/priv-app $sar/product/etc/permissions;
 chcon -R u:object_r:system_file:s0 $sar/product/etc/default-permissions $sar/product/etc/preferred-apps $sar/product/etc/sysconfig;
