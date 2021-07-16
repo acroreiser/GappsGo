@@ -219,9 +219,14 @@ ui_print " ";
 ui_print " * Adding GMS version to product/build.prop";
 echo "" >> $sar/product/build.prop;
 echo "ro.com.google.gmsversion=11_202011.go" >> $sar/product/build.prop;
-ui_print " * Setting theme for SetupWizard  (product/build.prop)";
+ui_print " * Setting SetupWizard props (product/build.prop)";
 echo "" >> $sar/product/build.prop;
 echo "setupwizard.theme=glif_v3_light" >> $sar/product/build.prop;
+echo "" >> $sar/product/build.prop;
+echo "setupwizard.feature.baseline_setupwizard_enabled=true" >> $sar/product/build.prop;
+echo "" >> $sar/product/build.prop;
+echo "ro.setupwizard.rotation_locked=true" >> $sar/product/build.prop;
+echo "" >> $sar/product/build.prop;
 ui_print "  + Done";
 ui_print " ";
 
