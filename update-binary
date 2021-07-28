@@ -48,6 +48,7 @@ ui_print " Antman_00WW-user 11 RP1A.200720.011 00WW_3_020 release-keys";
 ui_print " ";
 ui_print " * Fixed GoogleWallpaper permissions";
 ui_print " * Added GoogleCameraGo";
+ui_print " * Added Google Translate";
 ui_print " ";
 ui_print " Originally packaged by acroreiser to use with LineageGo 18.1 builds for Lenovo A6010/A6000.";
 ui_print " ";
