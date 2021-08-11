@@ -58,7 +58,6 @@
         <permission name="android.permission.SCORE_NETWORKS"/>
     </privapp-permissions>
     <privapp-permissions package="com.google.android.apps.nbu.files">
-        <permission name="android.permission.DELETE_PACKAGES"/>
         <permission name="android.permission.PACKAGE_USAGE_STATS"/>
     </privapp-permissions>
     <privapp-permissions package="com.google.android.apps.photos">
@@ -141,6 +140,9 @@
         <permission name="android.permission.READ_PRIVILEGED_PHONE_STATE"/>
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
     </privapp-permissions>
+    <privapp-permissions package="com.google.android.calendar">
+        <permission name="android.permission.INTERACT_ACROSS_PROFILES"/>
+    </privapp-permissions>
     <privapp-permissions package="com.google.android.configupdater">
         <permission name="android.permission.UPDATE_CONFIG"/>
     </privapp-permissions>
@@ -156,7 +158,6 @@
         <permission name="android.permission.ACTIVITY_EMBEDDING"/>
         <permission name="android.permission.ALLOCATE_AGGRESSIVE"/>
         <permission name="android.permission.BACKUP"/>
-        <permission name="android.permission.BIND_DIRECTORY_SEARCH"/>
         <permission name="android.permission.BLUETOOTH_PRIVILEGED"/>
         <permission name="android.permission.CALL_PRIVILEGED"/>
         <permission name="android.permission.CAPTURE_AUDIO_HOTWORD"/>
@@ -198,7 +199,6 @@
         <permission name="android.permission.RECEIVE_DATA_ACTIVITY_CHANGE"/>
         <permission name="android.permission.RECOVERY"/>
         <permission name="android.permission.RECOVER_KEYSTORE"/>
-        <permission name="android.permission.REGISTER_CALL_PROVIDER"/>
         <permission name="android.permission.REMOTE_DISPLAY_PROVIDER"/>
         <permission name="android.permission.RESET_PASSWORD"/>
         <permission name="android.permission.SCORE_NETWORKS"/>

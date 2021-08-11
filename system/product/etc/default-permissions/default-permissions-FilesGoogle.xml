@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<exceptions>
+  <exception
+    package="com.google.android.apps.nbu.files" >
+    <!-- External storage -->
+    <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="false"/>
+    <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="false"/>
+    <permission name="android.permission.ACCESS_MEDIA_LOCATION" fixed="false"/>
+  </exception>
+</exceptions>

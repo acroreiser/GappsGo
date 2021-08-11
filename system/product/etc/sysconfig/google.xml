@@ -46,7 +46,7 @@
     <app-link package="com.google.android.apps.youtube.mango" />
     <app-link package="com.google.android.youtube" />
     <app-link package="com.google.android.apps.docs" />
-    <app-link package="com.google.android.apps.photos" />
+    <app-link package="com.google.android.apps.photosgo" />
 
     <!-- Apps below are optional on GMS devices -->
     <app-link package="com.google.android.apps.docs.editors.sheets" />
