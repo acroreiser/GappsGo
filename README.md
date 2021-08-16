@@ -12,7 +12,9 @@ Additionally:
 Originally intended to use with Lineage Go 18.1 builds for Lenovo A6010/A6000 but useful for other legacy or Go devices like Nexus 4 "mako" (https://forum.xda-developers.com/t/rom-unofficial-lineageos-16-0-mako.3758779/post-85297647).
 
 To build default package (for a6010), run:
+
 $ ./make_gapps.sh default
 
 To build package for another device, run the script with an "market device name", "device codename" and "system partition block device" arguments:
+
 $ ./make_gapps.sh "Samsung Galaxy S3" "i9300" "/dev/block/mmcblk0p9"
