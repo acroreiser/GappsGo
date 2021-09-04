@@ -217,16 +217,19 @@ chcon -R u:object_r:system_file:s0 $sar/product/overlay/*.apk $sar/system/produc
 ui_print "  + SELinux contexts";
 ui_print " ";
 
-ui_print " * Adding GMS version to product/build.prop";
+ui_print " * Adding GMS props to product/build.prop";
 echo "" >> $sar/product/build.prop;
 echo "ro.com.google.gmsversion=11_202101.go" >> $sar/product/build.prop;
-ui_print " * Setting SetupWizard props (product/build.prop)";
 echo "" >> $sar/product/build.prop;
 echo "setupwizard.theme=glif_v3_light" >> $sar/product/build.prop;
 echo "" >> $sar/product/build.prop;
 echo "setupwizard.feature.baseline_setupwizard_enabled=true" >> $sar/product/build.prop;
 echo "" >> $sar/product/build.prop;
 echo "ro.setupwizard.rotation_locked=true" >> $sar/product/build.prop;
+echo "" >> $sar/product/build.prop;
+echo "ro.vendor.feature.gms_turbo=true" >> $sar/product/build.prop;
+echo "" >> $sar/product/build.prop;
+echo "ro.vendor.feature.target_has_low_ram=true" >> $sar/product/build.prop;
 echo "" >> $sar/product/build.prop;
 ui_print "  + Done";
 ui_print " ";
