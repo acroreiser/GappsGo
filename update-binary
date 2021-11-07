@@ -6,22 +6,6 @@ OUTFD=/proc/self/fd/$2;
 ZIP="$3";
 DIR=`dirname "$ZIP"`;
 
-# CHANGE $SYSTEM_BLK TO YOUR /SYSTEM BLOCK DEVICE
-# AND $TARGET_DEVICE(_DISP) to your device model
-# IF YOU WANT THIS ON YOUR DEVICE
-# OR SUGGEST ME UNIVERSAL SOLUTION (telegram: @acroreiser)
-
-###SYSTEM_BLK###
-
-# a6010="/dev/block/mmcblk0p23";
-
-###TARGET_DEVICE###
-# Really target device codename
-
-###TARGET_DEVICE_DISP###
-# Just to display
-# a6010="Lenovo A6010";
-
 ## internal functions
 
 ui_print() 
@@ -53,20 +37,19 @@ ui_print " ";
 ui_print " Originally packaged by acroreiser to use with LineageGo 18.1 builds for Lenovo A6010/A6000.";
 ui_print " ";
 ui_print " Packager: ###PACKAGER###";
-ui_print " Target device: $TARGET_DEVICE_DISP ($TARGET_DEVICE)";
 ui_print " ";
 
 umount /system;
 
-ui_print " * Mounting /system";
-mount -o rw -t ext4 $SYSTEM_BLK /system;
-if test -f /system/system/build.prop;
+ui_print " * Mounting /system_root";
+mount -o rw -t auto /system_root;
+if test -f /system_root/system/build.prop;
 then
 	ui_print "  + Detected system-as-root";
-	sar=/system/system;
-elif test -f /system/build.prop;
+	sar=/system_root/system;
+elif test -f /system_root/build.prop;
 then
-	sar=/system;
+	sar=/system_root;
 fi
 ui_print " ";
 
